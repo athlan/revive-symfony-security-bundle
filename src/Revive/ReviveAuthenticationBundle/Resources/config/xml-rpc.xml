@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="revive_authentication.xml_rpc.http_client" class="GuzzleHttp\Client">
+        </service>
+
+        <service id="revive_authentication.xml_rpc.client" class="fXmlRpc\Client">
+            <argument type="constant">null</argument>
+            <argument type="service">
+                <service class="fXmlRpc\Transport\HttpAdapterTransport">
+                    <argument type="service">
+                        <service class="Http\Message\MessageFactory\DiactorosMessageFactory" />
+                    </argument>
+                    <argument type="service">
+                        <service class="Http\Adapter\Guzzle6\Client">
+                            <argument type="service" id="revive_authentication.xml_rpc.http_client" />
+                        </service>
+                    </argument>
+                </service>
+            </argument>
+        </service>
+    </services>
+</container>

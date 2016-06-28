@@ -1,0 +1,18 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service abstract="true" id="revive_authentication.authenticator.login_form_authenticator" class="Revive\ReviveAuthenticationBundle\Security\Authenticator\LoginFormAuthenticator">
+        </service>
+
+        <service abstract="true" id="revive_authentication.authenticator.logout_handler" class="Revive\ReviveAuthenticationBundle\Security\Authentication\Logout\LogoutHandler">
+        </service>
+
+        <service id="revive_authentication.user_provider.revive_user_prototype" class="Revive\ReviveAuthenticationBundle\Security\User\ReviveUserPrototypeUserProvider">
+        </service>
+    </services>
+
+</container>
