@@ -3,6 +3,7 @@
 namespace Revive\ReviveAuthenticationBundle\Repository\Impl;
 
 use fXmlRpc\Client;
+use fXmlRpc\ClientInterface;
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
 use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 
@@ -14,17 +15,20 @@ use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 class XmlRpcUserSessionRepository implements UserSessionRepository {
 
     /**
-     * @var Client
+     * @var ClientInterface
      */
     private $client;
 
     /**
-     * @param Client $client
+     * @param ClientInterface $client
      * @param string $url
      */
-    public function __construct(Client $client, $url) {
+    public function __construct(ClientInterface $client, $url) {
         $this->client = $client;
-        $this->client->setUri($url);
+
+        if($client instanceof Client) {
+            $this->client->setUri($url);
+        }
     }
 
     /**

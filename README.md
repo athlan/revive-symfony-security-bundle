@@ -1,5 +1,9 @@
 # Revive Symfony Security integration bundle
 
+![travis](https://img.shields.io/travis/athlan/swiffy-parser/master.svg)
+![license](https://img.shields.io/packagist/l/athlan/swiffy-parser.svg)
+![version](https://img.shields.io/packagist/v/athlan/swiffy-parser.svg)
+
 This bundle allows you to enable Symfony Security authentication by providing Revive Aderver credentials.
 
 It allow you to build custom tools around Revive in Symfony Framework.
