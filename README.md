@@ -10,7 +10,19 @@ It allow you to build custom tools around Revive in Symfony Framework.
 
 # Installation
 
-1. Add bundle to `AppKernel.php`
+1. Add composer dependency
+
+```
+    "require": {
+        // ...
+
+        "athlan/revive-symfony-security-bundle": "1.0.0"
+
+        // ...
+    },
+```
+
+2. Add bundle to `AppKernel.php`
 
 ```
     public function registerBundles()
@@ -25,7 +37,7 @@ It allow you to build custom tools around Revive in Symfony Framework.
 
 ```
 
-2. Define several services in your container:
+3. Define several services in your container:
 
 ```
 services:
@@ -54,7 +66,7 @@ services:
 
 ```
 
-3. Configure security.yml
+4. Configure security.yml
 
 ```
 security:
