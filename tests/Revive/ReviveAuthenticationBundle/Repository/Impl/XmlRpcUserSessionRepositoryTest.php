@@ -8,8 +8,8 @@ use fXmlRpc\Exception\FaultException;
 use fXmlRpc\Exception\TransportException;
 use PHPUnit\Framework\TestCase;
 
-use \Mockery as m;
-use \Mockery\Adapter\PHPUnit\MockeryPHPUnitIntegration;
+use Mockery as m;
+use Mockery\Adapter\PHPUnit\MockeryPHPUnitIntegration;
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
 
 class XmlRpcUserSessionRepositoryTest extends TestCase {

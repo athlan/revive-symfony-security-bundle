@@ -2,8 +2,8 @@
 
 namespace Revive\ReviveAuthenticationBundle\Security\Authenticator;
 
-use \Mockery as m;
-use \Mockery\Adapter\PHPUnit\MockeryPHPUnitIntegration;
+use Mockery as m;
+use Mockery\Adapter\PHPUnit\MockeryPHPUnitIntegration;
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
 use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 use Revive\ReviveAuthenticationBundle\Security\Authentication\Token\ReviveAuthenticationToken;
