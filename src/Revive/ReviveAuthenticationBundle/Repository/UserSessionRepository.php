@@ -3,13 +3,14 @@
 namespace Revive\ReviveAuthenticationBundle\Repository;
 
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationResult;
 
 interface UserSessionRepository {
 
     /**
      * @param $username
      * @param $password
-     * @return string sessionId
+     * @return UserSessionCreationResult
      *
      * @throws \InvalidArgumentException when username or password are incorrect
      * @throws RepositoryInfrastructureException when there is any infrastructure issue

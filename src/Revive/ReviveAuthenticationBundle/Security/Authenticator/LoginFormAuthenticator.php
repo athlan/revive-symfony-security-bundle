@@ -3,6 +3,8 @@
 namespace Revive\ReviveAuthenticationBundle\Security\Authenticator;
 
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthenticationResult;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthorizationSessionCreationResult;
 use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 use Revive\ReviveAuthenticationBundle\Security\Authentication\Token\ReviveAuthenticationToken;
 use Symfony\Component\HttpFoundation\Request;
@@ -48,9 +50,9 @@ class LoginFormAuthenticator implements SimpleFormAuthenticatorInterface {
         $username = $token->getUsername();
         $password = $token->getCredentials();
 
-        $sessionId = null;
+        $sessionCreationResult = null;
         try {
-            $sessionId = $this->userSessionRepository->createSessionIdByCredentials($username, $password);
+            $sessionCreationResult = $this->userSessionRepository->createSessionIdByCredentials($username, $password);
         }
         catch(\InvalidArgumentException $e) {
             throw new CustomUserMessageAuthenticationException('Invalid username or password');
@@ -59,14 +61,23 @@ class LoginFormAuthenticator implements SimpleFormAuthenticatorInterface {
             throw new CustomUserMessageAuthenticationException('Cannot connect to Revive service');
         }
 
-        $passwordValid = $sessionId !== false;
+        $passwordValid = ($sessionCreationResult !== null) && UserSessionCreationAuthenticationResult::isSuccess($sessionCreationResult->getSessionCreationAuthenticationResult());
 
         if ($passwordValid) {
+            $sessionId = $sessionCreationResult->getSessionId();
+            $roles = [];
+
+            $roles[] = 'USER';
+
+            if(UserSessionCreationAuthorizationSessionCreationResult::isSuccess($sessionCreationResult->getSessionCreationAuthorizationSessionCreation())) {
+                $roles[] = 'ADMIN';
+            }
+
             $token = new ReviveAuthenticationToken(
                 $user,
                 $sessionId,
                 $providerKey,
-                ['USER']
+                $roles
             );
 
             return $token;

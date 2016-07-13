@@ -4,6 +4,9 @@ namespace Revive\ReviveAuthenticationBundle\Repository\Impl;
 
 use fXmlRpc\Client;
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthenticationResult;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthorizationSessionCreationResult;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationResult;
 use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 
 /**
@@ -23,7 +26,12 @@ class NoopUserSessionRepository implements UserSessionRepository {
         }
 
         $reviveSessionId = "mock-sessid";
-        return $reviveSessionId;
+
+        return new UserSessionCreationResult(
+            UserSessionCreationAuthenticationResult::SUCCESS,
+            UserSessionCreationAuthorizationSessionCreationResult::SUCCESS,
+            $reviveSessionId
+        );
     }
 
     /**

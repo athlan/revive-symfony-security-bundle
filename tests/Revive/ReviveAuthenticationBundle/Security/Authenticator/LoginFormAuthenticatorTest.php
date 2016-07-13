@@ -5,6 +5,9 @@ namespace Revive\ReviveAuthenticationBundle\Security\Authenticator;
 use Mockery as m;
 use Mockery\Adapter\PHPUnit\MockeryPHPUnitIntegration;
 use Revive\ReviveAuthenticationBundle\Repository\Exception\RepositoryInfrastructureException;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthenticationResult;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationAuthorizationSessionCreationResult;
+use Revive\ReviveAuthenticationBundle\Repository\UserSession\UserSessionCreationResult;
 use Revive\ReviveAuthenticationBundle\Repository\UserSessionRepository;
 use Revive\ReviveAuthenticationBundle\Security\Authentication\Token\ReviveAuthenticationToken;
 use Revive\ReviveAuthenticationBundle\Security\User\ReviveUserPrototype;
@@ -53,11 +56,15 @@ class LoginFormAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $password = "any_password";
         $providerKey = "any_provider_key";
         $token = new UsernamePasswordToken($username, $password, $providerKey);
-        $sessionId = 'some_session_id';
+        $sessionCreationResult = new UserSessionCreationResult(
+            UserSessionCreationAuthenticationResult::SUCCESS,
+            UserSessionCreationAuthorizationSessionCreationResult::SUCCESS,
+            'some_session_id'
+        );
         $prototypeToken = new ReviveUserPrototype($username);
 
         $this->userProvider->shouldReceive('loadUserByUsername')->with($username)->once()->andReturn($prototypeToken);
-        $this->userSessionRepoitory->shouldReceive('createSessionIdByCredentials')->with($username, $password)->once()->andReturn($sessionId);
+        $this->userSessionRepoitory->shouldReceive('createSessionIdByCredentials')->with($username, $password)->once()->andReturn($sessionCreationResult);
 
         // when
         $authenticatedToken = $this->sut->authenticateToken($token, $this->userProvider, $providerKey);
@@ -65,7 +72,37 @@ class LoginFormAuthenticatorTest extends \PHPUnit_Framework_TestCase {
         $this->assertTrue($authenticatedToken->isAuthenticated(),
             "Token should not be authenticated.");
 
-        $this->assertEquals($sessionId, $authenticatedToken->getSessionId(),
+        $this->assertEquals($sessionCreationResult->getSessionId(), $authenticatedToken->getSessionId(),
+            "Token should contains valid session id.");
+    }
+
+    /**
+     * @test
+     */
+    public function authenticates_successfully_while_not_admin()
+    {
+        // given
+        $username = "any_username";
+        $password = "any_password";
+        $providerKey = "any_provider_key";
+        $token = new UsernamePasswordToken($username, $password, $providerKey);
+        $sessionCreationResult = new UserSessionCreationResult(
+            UserSessionCreationAuthenticationResult::SUCCESS,
+            UserSessionCreationAuthorizationSessionCreationResult::FAILED_NOT_ADMIN,
+            null
+        );
+        $prototypeToken = new ReviveUserPrototype($username);
+
+        $this->userProvider->shouldReceive('loadUserByUsername')->with($username)->once()->andReturn($prototypeToken);
+        $this->userSessionRepoitory->shouldReceive('createSessionIdByCredentials')->with($username, $password)->once()->andReturn($sessionCreationResult);
+
+        // when
+        $authenticatedToken = $this->sut->authenticateToken($token, $this->userProvider, $providerKey);
+
+        $this->assertTrue($authenticatedToken->isAuthenticated(),
+            "Token should not be authenticated.");
+
+        $this->assertEquals(null, $authenticatedToken->getSessionId(),
             "Token should contains valid session id.");
     }
 
